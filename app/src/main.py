@@ -7,6 +7,7 @@ import paho.mqtt.client as mqtt
 from vehicle import Vehicle, vehicle  # Velocitas Vehicle
 from velocitas_sdk.vehicle_app import VehicleApp
 
+# ci error
 BROKER_ADDRESS = "127.0.0.1"
 PORT = 1883
 TOPIC_ALERT = "alert/car"
