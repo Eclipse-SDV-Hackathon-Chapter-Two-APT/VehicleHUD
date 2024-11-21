@@ -6,7 +6,8 @@
 	},
 	"runArgs": [
 		"--init",
-		"--privileged"
+		"--privileged",
+		"--net=host"
 	],
 	"containerEnv": {
 		"GITHUB_API_TOKEN": "${localEnv:GITHUB_API_TOKEN}",
