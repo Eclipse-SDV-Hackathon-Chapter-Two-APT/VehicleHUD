@@ -37,6 +37,8 @@ RUN pip3 install --no-cache-dir pyinstaller==5.9.0 \
     && pip3 install --no-cache-dir staticx \
     && pip3 install --no-cache-dir -r ./workspace/app/requirements.txt \
     && pip3 install --no-cache-dir -r ./workspace/app/requirements-links.txt
+    && pip3 install geopy
+
 
 WORKDIR /workspace
 

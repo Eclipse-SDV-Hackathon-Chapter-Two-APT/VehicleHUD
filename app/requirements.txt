@@ -79,3 +79,6 @@ zipp==3.20.2
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
+geopy
+pygame
+kuksa_client
