@@ -33,13 +33,13 @@ from velocitas_sdk.vehicle_app import VehicleApp
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+
 # MQTT Configuration
 BROKER_ADDRESS = "127.0.0.1"
 PORT = 1883
 TOPIC_ALERT = "alert/car"
 TOPIC_WEATHER = "alert/weather"
 TOPIC_ACCIDENT = "accident"
-
 
 # KUKSA Configuration
 KUKSA_HOST = "127.0.0.1"
@@ -56,6 +56,8 @@ font_large = pygame.font.Font(None, 40)
 font_small = pygame.font.Font(None, 20)
 clock = pygame.time.Clock()
 
+
+# alert image
 background_image = pygame.image.load("/workspaces/VehicleHUD/app/src/Hit&Run Case.png")
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
@@ -89,17 +91,20 @@ alert_weather_icon = pygame.image.load(
 alert_weather_icon = pygame.transform.scale(alert_weather_icon, (325, 279))
 
 
+# class definition
 class CustomVehicleApp(VehicleApp):
     def __init__(self, vehicle_client: Vehicle):
         super().__init__()
         self.Vehicle = vehicle_client
 
+        # generate mqtt client
         self.mqtt_client = mqtt.Client()
         self.mqtt_client.on_connect = self.on_connect
         self.mqtt_client.on_message = self.on_message
         self.mqtt_client.connect(BROKER_ADDRESS, PORT)
         self.mqtt_client.loop_start()
 
+        # generate kuksa client
         self.kuksa_client = VSSClient(KUKSA_HOST, KUKSA_PORT)
         self.kuksa_client.connect()
 
@@ -112,7 +117,7 @@ class CustomVehicleApp(VehicleApp):
         self.message_display_time: Optional[float] = None
         self.current_speed = random.randrange(66, 75)
         self.this_location = {"latitude": 50, "longitude": 9}
-        self.collision_location = {"latitude": 100, "longitude": 9}
+        self.accdient_distance = 0
 
     async def on_stop(self):
         logger.info("Stopping MQTT and KUKSA Clients...")
@@ -142,19 +147,15 @@ class CustomVehicleApp(VehicleApp):
             elif message.topic == TOPIC_ALERT:
                 self.collision_location = data.get("collision_location")
                 logger.info(self.collision_location)
-                accident_distance = geopy.distance.distance(
+                self.accdient_distance = geopy.distance.distance(
                     (
                         self.collision_location["latitude"],
                         self.collision_location["longitude"],
                     ),
                     (self.this_location["latitude"], self.this_location["longitude"]),
                 ).km
-                a = self.this_location["latitude"]
-                logger.info(f"what is it{a}")
-                self.message_to_display = (
-                    f"Collision Distance: {round(accident_distance, 1)} KM"
-                    # f"Collision Distance: {0} KM"
-                )
+
+                self.message_to_display = f"{round(self.accdient_distance, 1)} M"
 
                 logger.info(f"Collision Data Received: {data}")
                 logger.info(f"{self.message_to_display}")
@@ -165,6 +166,7 @@ class CustomVehicleApp(VehicleApp):
 
     async def monitor_kuksa(self):
         try:
+            # get gps mock data here
             logger.info("Subscribing to KUKSA data...")
             for update in self.kuksa_client.subscribe_current_values(
                 [
@@ -172,13 +174,12 @@ class CustomVehicleApp(VehicleApp):
                     "Vehicle.CurrentLocation.Longitude",
                 ]
             ):
-                latitude = update.get("Vehicle.CurrentLocation.Latitude").value
-                longitude = update.get("Vehicle.CurrentLocation.Longitude").value
-
-                if latitude and longitude:
-                    self.this_location["latitude"] = latitude
-                    self.this_location["longitude"] = longitude
-                    logger.info(self.this_location["latitude"])
+                self.this_location["latitude"] = update.get(
+                    "Vehicle.CurrentLocation.Latitude"
+                ).value
+                self.this_location["longitude"] = update.get(
+                    "Vehicle.CurrentLocation.Longitude"
+                ).value
         except Exception as e:
             logger.error(f"KUKSA monitoring failed: {e}")
 
@@ -190,34 +191,27 @@ class CustomVehicleApp(VehicleApp):
                     pygame.quit()
                     sys.exit()
 
-            # self.this_location["latitude"] -= 0.05
-            # self.this_location["longitude"] -= 0.03
-            # # logger.info(f"{pro}")
             if self.message_to_display:
-                # logger.info(f"{self.message_to_display}")
                 self.display_message(self.message_to_display)
                 if time.time() - self.message_display_time > 5:
                     self.message_to_display = None
             else:
                 screen.blit(background_image, (0, 0))
                 pygame.display.flip()
-            # logger.info("dsddas")
-
-            clock.tick(30)
+            clock.tick(10)
             await asyncio.sleep(0.03)
 
     def display_message(self, text):
+        # hud display describe
         if "Slide Count" in text:
-            logger.info("Displaying weather-related warning...")
             screen.blit(weather_background_image, (0, 0))
             screen.blit(weather_speed_icon, (WIDTH // 2 - 330, HEIGHT // 2 - 90))
             screen.blit(alert_weather_icon, (WIDTH // 2 - 125, HEIGHT // 2 - 120))
             screen.blit(two_car_icon, (WIDTH // 2 - 350, HEIGHT // 2 - 80))
-            # message_surface = font_large.render(text, True, (0, 255, 0))
-            # screen.blit(message_surface, (WIDTH // 2 + 120, HEIGHT // 2 - 50))
         else:
-            logger.info("Displaying collision-related warning...")
             screen.blit(background_image, (0, 0))
+            self.accdient_distance += 2
+            text = f"{round(self.accdient_distance, 1)} M"
             if self.collision_location["latitude"] < 52:
                 screen.blit(warning_speed_icon, (WIDTH // 2 - 330, HEIGHT // 2 - 90))
             screen.blit(warning_icon, (WIDTH // 2, HEIGHT // 2 - 120))
@@ -225,32 +219,6 @@ class CustomVehicleApp(VehicleApp):
             message_surface = font_large.render(text, True, (255, 0, 0))
             screen.blit(message_surface, (WIDTH // 2 + 120, HEIGHT // 2 - 50))
         pygame.display.flip()
-
-    # pygame.display.flip()  # 화면 업데이트
-    # def display_message(self, text):
-    #     # logger.info(ds)
-    #     #  normal
-    #     screen.blit(background_image, (0, 0))
-    #     logger.info(self.collision_location["latitude"])
-    #     if self.collision_location["latitude"] < 52:
-    #         screen.blit(warning_speed_icon, (WIDTH // 2 - 330, HEIGHT // 2 - 90))
-    #     screen.blit(warning_icon, (WIDTH // 2, HEIGHT // 2 - 120))
-    #     screen.blit(warning_road_icon, (WIDTH // 2 + 10, HEIGHT // 2 + 40))
-    #     message_surface = font_large.render(text, True, (255, 255, 255))
-    #     screen.blit(message_surface, (WIDTH // 2 + 120, HEIGHT // 2 - 50))
-
-    #     # weather implement
-
-    #     if self.collision_location["latitude"] < 52:
-    #         screen.blit(weather_speed_icon, (WIDTH // 2 - 330, HEIGHT // 2 - 90))
-    #     screen.blit(alert_weather_icon, (WIDTH // 2, HEIGHT // 2 - 120))
-    #     message_surface = font_large.render(text, True, (255, 255, 255))
-    #     screen.blit(two_car_icon, (WIDTH // 2 + 10, HEIGHT // 2 + 40))
-    #     screen.blit(message_surface, (WIDTH // 2 + 120, HEIGHT // 2 - 50))
-    #     pygame.display.flip()
-
-
-# weather_speed_icon,  alert_weather_icon,  two_car_icon
 
 
 async def main():
