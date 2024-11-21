@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-# MQTT Configuration
+# MQTT Configuration .
 BROKER_ADDRESS = "127.0.0.1"
 PORT = 1883
 TOPIC_ALERT = "alert/car"
