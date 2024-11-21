@@ -12,6 +12,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+# test
 
 import asyncio
 import json
@@ -68,7 +69,7 @@ weather_background_image = pygame.transform.scale(
 warning_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_msg.png")
 warning_icon = pygame.transform.scale(warning_icon, (240, 175))
 
-warning_speed_icon = pygame.image.load("app/src/alert_speed.png")
+warning_speed_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_speed.png")
 warning_speed_icon = pygame.transform.scale(warning_speed_icon, (280, 270))
 
 warning_road_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_road.png")
@@ -148,6 +149,8 @@ class CustomVehicleApp(VehicleApp):
                     ),
                     (self.this_location["latitude"], self.this_location["longitude"]),
                 ).km
+                a = self.this_location["latitude"]
+                logger.info(f"what is it{a}")
                 self.message_to_display = (
                     f"Collision Distance: {round(accident_distance, 1)} KM"
                     # f"Collision Distance: {0} KM"
