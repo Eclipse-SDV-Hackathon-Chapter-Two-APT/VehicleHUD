@@ -25,7 +25,7 @@ from typing import Optional
 import geopy.distance
 import paho.mqtt.client as mqtt
 import pygame
-from kuksa_client.grpc import VSSClient  # KUKSA Client
+from kuksa_client.grpc import VSSClient
 from vehicle import Vehicle, vehicle
 from velocitas_sdk.vehicle_app import VehicleApp
 
