@@ -57,6 +57,7 @@ font_small = pygame.font.Font(None, 20)
 clock = pygame.time.Clock()
 
 
+<<<<<<< HEAD
 # Base directory for assets
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -86,6 +87,34 @@ warning_road_icon = load_image("app/src/alert_road.png", (328, 99))
 two_car_icon = load_image("app/src/signal.png", (64, 64))
 weather_speed_icon = load_image("app/src/weather_speed.png", (222, 215))
 alert_weather_icon = load_image("app/src/alert_weather.png", (325, 279))
+=======
+# alert image
+background_image = pygame.image.load("./src/Hit&Run Case.png")
+background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+
+weather_background_image = pygame.image.load("./src/Weather Alert Case.png")
+weather_background_image = pygame.transform.scale(
+    weather_background_image, (WIDTH, HEIGHT)
+)
+
+warning_icon = pygame.image.load("./src/alert_msg.png")
+warning_icon = pygame.transform.scale(warning_icon, (240, 175))
+
+warning_speed_icon = pygame.image.load("./src/alert_speed.png")
+warning_speed_icon = pygame.transform.scale(warning_speed_icon, (280, 270))
+
+warning_road_icon = pygame.image.load("./src/alert_road.png")
+warning_road_icon = pygame.transform.scale(warning_road_icon, (328, 99))
+
+two_car_icon = pygame.image.load("./src/signal.png")
+two_car_icon = pygame.transform.scale(two_car_icon, (64, 64))
+
+weather_speed_icon = pygame.image.load("./src/weather_speed.png")
+weather_speed_icon = pygame.transform.scale(weather_speed_icon, (278 * 0.8, 269 * 0.8))
+
+alert_weather_icon = pygame.image.load("./src/alert_weather.png")
+alert_weather_icon = pygame.transform.scale(alert_weather_icon, (325, 279))
+>>>>>>> 01220d3ebab30834b7fdac5d6fda56d677486e10
 
 
 # class definition
