@@ -57,36 +57,30 @@ clock = pygame.time.Clock()
 
 
 # alert image
-background_image = pygame.image.load("/workspaces/VehicleHUD/app/src/Hit&Run Case.png")
+background_image = pygame.image.load("/src/Hit&Run Case.png")
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
-weather_background_image = pygame.image.load(
-    "/workspaces/VehicleHUD/app/src/Weather Alert Case.png"
-)
+weather_background_image = pygame.image.load("/src/Weather Alert Case.png")
 weather_background_image = pygame.transform.scale(
     weather_background_image, (WIDTH, HEIGHT)
 )
 
-warning_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_msg.png")
+warning_icon = pygame.image.load("/src/alert_msg.png")
 warning_icon = pygame.transform.scale(warning_icon, (240, 175))
 
-warning_speed_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_speed.png")
+warning_speed_icon = pygame.image.load("/src/alert_speed.png")
 warning_speed_icon = pygame.transform.scale(warning_speed_icon, (280, 270))
 
-warning_road_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_road.png")
+warning_road_icon = pygame.image.load("/src/alert_road.png")
 warning_road_icon = pygame.transform.scale(warning_road_icon, (328, 99))
 
-two_car_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/signal.png")
+two_car_icon = pygame.image.load("/src/signal.png")
 two_car_icon = pygame.transform.scale(two_car_icon, (64, 64))
 
-weather_speed_icon = pygame.image.load(
-    "/workspaces/VehicleHUD/app/src/weather_speed.png"
-)
+weather_speed_icon = pygame.image.load("/src/weather_speed.png")
 weather_speed_icon = pygame.transform.scale(weather_speed_icon, (278 * 0.8, 269 * 0.8))
 
-alert_weather_icon = pygame.image.load(
-    "/workspaces/VehicleHUD/app/src/alert_weather.png"
-)
+alert_weather_icon = pygame.image.load("/src/alert_weather.png")
 alert_weather_icon = pygame.transform.scale(alert_weather_icon, (325, 279))
 
 
