@@ -16,6 +16,7 @@
 import asyncio
 import json
 import logging
+import os
 import random
 import signal
 import sys
@@ -56,38 +57,35 @@ font_small = pygame.font.Font(None, 20)
 clock = pygame.time.Clock()
 
 
-# alert image
-background_image = pygame.image.load("/workspaces/VehicleHUD/app/src/Hit&Run Case.png")
-background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+# Base directory for assets
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-weather_background_image = pygame.image.load(
-    "/workspaces/VehicleHUD/app/src/Weather Alert Case.png"
-)
-weather_background_image = pygame.transform.scale(
-    weather_background_image, (WIDTH, HEIGHT)
-)
 
-warning_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_msg.png")
-warning_icon = pygame.transform.scale(warning_icon, (240, 175))
+def load_image(relative_path, size=None):
+    """Load an image from the relative path and resize if size is provided."""
+    try:
+        # Use BASE_DIR to dynamically resolve file paths
+        full_path = os.path.join(BASE_DIR, relative_path)
+        if not os.path.isfile(full_path):
+            raise FileNotFoundError(f"File not found: {full_path}")
+        image = pygame.image.load(full_path)
+        if size:
+            image = pygame.transform.scale(image, size)
+        return image
+    except Exception as e:
+        logger.error(f"Failed to load image {relative_path}: {e}")
+        sys.exit(1)
 
-warning_speed_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_speed.png")
-warning_speed_icon = pygame.transform.scale(warning_speed_icon, (280, 270))
 
-warning_road_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/alert_road.png")
-warning_road_icon = pygame.transform.scale(warning_road_icon, (328, 99))
-
-two_car_icon = pygame.image.load("/workspaces/VehicleHUD/app/src/signal.png")
-two_car_icon = pygame.transform.scale(two_car_icon, (64, 64))
-
-weather_speed_icon = pygame.image.load(
-    "/workspaces/VehicleHUD/app/src/weather_speed.png"
-)
-weather_speed_icon = pygame.transform.scale(weather_speed_icon, (278 * 0.8, 269 * 0.8))
-
-alert_weather_icon = pygame.image.load(
-    "/workspaces/VehicleHUD/app/src/alert_weather.png"
-)
-alert_weather_icon = pygame.transform.scale(alert_weather_icon, (325, 279))
+# Update image paths
+background_image = load_image("app/src/Hit&Run Case.png", (WIDTH, HEIGHT))
+weather_background_image = load_image("app/src/Weather Alert Case.png", (WIDTH, HEIGHT))
+warning_icon = load_image("app/src/alert_msg.png", (240, 175))
+warning_speed_icon = load_image("app/src/alert_speed.png", (280, 270))
+warning_road_icon = load_image("app/src/alert_road.png", (328, 99))
+two_car_icon = load_image("app/src/signal.png", (64, 64))
+weather_speed_icon = load_image("app/src/weather_speed.png", (222, 215))
+alert_weather_icon = load_image("app/src/alert_weather.png", (325, 279))
 
 
 # class definition
